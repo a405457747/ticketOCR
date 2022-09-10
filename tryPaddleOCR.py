@@ -145,7 +145,7 @@ def dataTicket(path):
                 totalMoney =reArr[0];
             #print("TEMP:",totalMoney)
     #大写的钱
-    bigMoney=singleUseDataFind(useData,r"(\w{1,}[圆角分]{1})整$");
+    bigMoney=singleUseDataFind(useData,r"(\w{1,}[整分])$");
 
     #print("ssss",totalMoney==None);
 
@@ -211,7 +211,7 @@ def handleTicketDataArr(originalPath,excelPath):
     imgFilePaths =controlFile.gainAllFilePath2(originalPath,[".pdf"]);
     
     if(isTest):
-        imgFilePaths=["./original/重庆齐悦安康医院股份有限公司07270609广西天下药业有限责任公司.jpg"]
+        imgFilePaths=["./original/旬阳高新联合医院35777302重庆今瑜医药股份有限公司PDF.jpg"]
 
     
     listTicketDataArr=[];
