@@ -1,6 +1,8 @@
 
 
+
 import os
+
 import re
 import shutil
 
@@ -54,6 +56,15 @@ def useDataFind(useData,strFlag):
             res.append(matchRes);
     return res;
 
+def useDataFindAddLimit(useData,strFlag,matchResFunc):
+    res=[];
+    for item in useData:
+        matchRes=(dataIsMatch(item,strFlag));
+        if(matchRes!=None and matchResFunc(matchRes)):
+            res.append(matchRes);
+    return res;
+
+
 def singleUseDataFind(useData,strFlag):
     res =useDataFind(useData,strFlag);
     if len(res)>=1:
@@ -71,6 +82,10 @@ def idxUseDataFind(useData,strFlag,idxOffset=0):
         return useData[(i+idxOffset)];
     else:
         return "";
+
+def moneyFlag(breakItem):
+    return ("¥" in breakItem) or("￥" in breakItem) or("." in breakItem) or("羊" in breakItem)
+
 def moneyIdxUseDataFind(useData,strFlag,idxOffset=0):
     res =-1;
     breakItem="";
@@ -80,10 +95,16 @@ def moneyIdxUseDataFind(useData,strFlag,idxOffset=0):
             breakItem =item;
             break;
     if(res!=-1):
-        if("¥" in breakItem) or("￥" in breakItem):
+        if moneyFlag(breakItem):
             return breakItem;
         else: 
-            return useData[(i+idxOffset)];
+            idxOffset=1;
+            while(idxOffset<=3):
+                newItem = useData[(i+idxOffset)]
+                if(moneyFlag(newItem)):
+                    return newItem
+                idxOffset=idxOffset+1;
+            return "";
     else:
         return "";
 
@@ -98,15 +119,18 @@ def dataTicket(path):
     useData =readTicket(path);
     #print("useDataItem is ");
     for item in useData:
-        #print("【】"+item)
+        if(isTest):
+            print("[useDataItem]:"+item)
         pass
     
     #前面带一个中文 \u4e00-\u9fa5这个是汉字范围
-    names =useDataFind(useData,r"称?[:： ]?([\u4e00-\u9fa5]{1}\w+[司院]$)");#0购买方，1是销售方
+    names =useDataFindAddLimit(useData,r"称?[:： ]?([\u4e00-\u9fa5]{1}[\w()（）]+[司院]$)",lambda res:len(res)>3 and("印务" not in res));#0购买方，1是销售方
     buyName ="";
     sellName="";
     namesLength =len(names);
-    #print("namesLength is ",namesLength,"arr:",names,"path is:",path);
+     
+    if(isTest): 
+        print("[namesLength]:",namesLength,"arr:",names,"path is:",path);
     if(len(names)==2):#这里用了正则还是姚限制，因为没singleUseDataFind要找的严谨
         buyName= names[0];
         sellName=names[1];
@@ -114,9 +138,18 @@ def dataTicket(path):
     ticket_number =singleUseDataFind(useData,r"发?票?号?码?[:： ]?(\d{8}$)");
     ticket_date =singleUseDataFind(useData,r"开?票?日?期?[:： ]?(\d{4}年\d{2}月\d{2}日$)");
     ticket_verify =singleUseDataFind(useData,r"校?[ ]?验?[ ]?码?[:： ]?(\d{5}[ ]?\d{5}[ ]?\d{5}[ ]?\d{5}$)");
-    totalMoney=moneyIdxUseDataFind(useData,r"\W*(小写)\W*",1);
+    totalMoney=moneyIdxUseDataFind(useData,r"\W*(小写)\W*");
+    if(totalMoney!=""):
+            reArr= re.findall(r'-?\d+\.?\d*e?-?\d*?', totalMoney);
+            if(len(reArr)>0):
+                totalMoney =reArr[0];
+            #print("TEMP:",totalMoney)
+    #大写的钱
+    bigMoney=singleUseDataFind(useData,r"(\w{1,}[圆角分]{1})整$");
 
-    return[buyName,sellName,ticket_code,ticket_number,ticket_date,ticket_verify,totalMoney]
+    #print("ssss",totalMoney==None);
+
+    return[buyName,sellName,ticket_code,ticket_number,ticket_date,ticket_verify,totalMoney,bigMoney]
 
 
 def rotateImage(imgPath):
@@ -163,8 +196,10 @@ def imgRename(imgPath,ticketDataArr):
 
     if(newName!=""):
         controlFile.situRenameFile(imgPath,newName);
+        return newName+ controlFile.pathFileSuffix(imgPath);
     else:
         print("发票有问题");
+        return os.path.basename(imgPath);
 
 #把original中的图片(已经改名了)复制到changed文件夹
 def ticketMove(imgFilePaths,targetDir):
@@ -174,15 +209,22 @@ def ticketMove(imgFilePaths,targetDir):
 def handleTicketDataArr(originalPath,excelPath):
     #过滤掉pdf 
     imgFilePaths =controlFile.gainAllFilePath2(originalPath,[".pdf"]);
-    #imgFilePaths=["./original/a3.jpg","./original/PDF7.jpg"]
+    
+    if(isTest):
+        imgFilePaths=["./original/重庆齐悦安康医院股份有限公司07270609广西天下药业有限责任公司.jpg"]
 
     
     listTicketDataArr=[];
     for img in imgFilePaths:
         ticketDataArr=dataTicket(img);
-        print("【想要的数据有】：",ticketDataArr)
+        print("[想要数据]：",ticketDataArr)
         listTicketDataArr.append(ticketDataArr);
-        imgRename(img,ticketDataArr);
+
+        if(isTest):
+            return
+        #获取重命名后的baseName 
+        baseName= imgRename(img,ticketDataArr);
+        ticketDataArr.append(baseName);
         #print("dataItem is ",ticketDataArr[0]);
     
 
@@ -220,8 +262,13 @@ def process():
 
     handleTicketDataArr(originalPath,excelPath);
 
+#临时测试模式
+isTest=False;
 def main():
-    #testRe();
+    
+
+    if(isTest):
+        testRe();
     process();
 
 

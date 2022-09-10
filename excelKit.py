@@ -28,7 +28,12 @@ class excelKit:
             # 最后一行数目
             last_row=sht.range('A' + str(sht.cells.last_cell.row)).end('up').row
             # 追加然后保存
-            sht.range('A'+str(last_row+1)).value =rowData;
+            rg=sht.range('A'+str(last_row+1));
+            # 设置为文本化
+            sht.range('A'+str(last_row+1)+":"+'H'+str(last_row+1)).api.NumberFormat = "@"
+
+            rg.value =rowData;
+
 
 
         # 保存excel

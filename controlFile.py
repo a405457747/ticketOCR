@@ -126,3 +126,9 @@ class controlFile:
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
+    
+    # 创建一个文件
+    def createFileIfAbsence(filePath):
+        if(os.path.exists(filePath)==False):
+            f= open(filePath,"w+")
+            f.close();
