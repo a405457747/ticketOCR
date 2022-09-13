@@ -135,6 +135,7 @@ def dataTicket(path):
         buyName= names[0];
         sellName=names[1];
     elif(len(names)==1):
+        buyName="没";
         sellName=names[0];
 
 
