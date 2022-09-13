@@ -226,11 +226,12 @@ def handleTicketDataArr(originalPath,excelPath):
     imgFilePaths =controlFile.gainAllFilePath2(originalPath,[".pdf"]);
     
     if(isTest):
-        imgFilePaths=["./original/12343789.jpg"]
+        imgFilePaths=["./original/83.jpg"]
 
     
     listTicketDataArr=[];
     for img in imgFilePaths:
+        print("img is ",img);
         ticketDataArr=dataTicket(img);
         print("[想要数据]：",ticketDataArr)
         listTicketDataArr.append(ticketDataArr);
