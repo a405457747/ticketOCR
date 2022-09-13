@@ -194,6 +194,7 @@ def originalToPdfAndRotateImage(originalPath):
 
 #保存到excel表中
 def saveTicketToExcel(listTicketDataArr,excelPath):
+    print("append To excel and excel path is ",excelPath);
     excelKit.appendRows(excelPath,listTicketDataArr);
 
 #发票重命名
