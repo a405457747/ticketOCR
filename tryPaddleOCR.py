@@ -124,7 +124,7 @@ def dataTicket(path):
         pass
     
     #前面带一个中文 \u4e00-\u9fa5这个是汉字范围
-    names =useDataFindAddLimit(useData,r"称?[:： ]?([\u4e00-\u9fa5]{1}[\w()（）]+[司院]$)",lambda res:len(res)>3 and("印务" not in res));#0购买方，1是销售方
+    names =useDataFindAddLimit(useData,r"称?[:： ,，]?([\u4e00-\u9fa5]{1}[\w()（）]+[司院]$)",lambda res:len(res)>3 and("印务" not in res));#0购买方，1是销售方
     buyName ="";
     sellName="";
     namesLength =len(names);
@@ -134,6 +134,10 @@ def dataTicket(path):
     if(len(names)==2):#这里用了正则还是姚限制，因为没singleUseDataFind要找的严谨
         buyName= names[0];
         sellName=names[1];
+    elif(len(names)==1):
+        sellName=names[0];
+
+
     ticket_code =singleUseDataFind(useData,r"发?票?代?码?[:： ]?(\d{12}$)");
     ticket_number =singleUseDataFind(useData,r"发?票?号?码?[:： ]?(\d{8}$)");
     ticket_date =singleUseDataFind(useData,r"开?票?日?期?[:： ]?(\d{4}年\d{2}月\d{2}日$)");
@@ -148,6 +152,15 @@ def dataTicket(path):
     bigMoney=singleUseDataFind(useData,r"(\w{1,}[整分])$");
 
     #print("ssss",totalMoney==None);
+
+    #小写的钱如果没找到就向上找一次，一次就够了， todo 这下面有重复哦
+    if(totalMoney==""):
+        totalMoney=idxUseDataFind(useData,r"\W*(小写)\W*",-1);
+        if(totalMoney!=""):
+                reArr= re.findall(r'-?\d+\.?\d*e?-?\d*?', totalMoney);
+                if(len(reArr)>0):
+                    totalMoney =reArr[0];
+
 
     return[buyName,sellName,ticket_code,ticket_number,ticket_date,ticket_verify,totalMoney,bigMoney]
 
@@ -211,7 +224,7 @@ def handleTicketDataArr(originalPath,excelPath):
     imgFilePaths =controlFile.gainAllFilePath2(originalPath,[".pdf"]);
     
     if(isTest):
-        imgFilePaths=["./original/旬阳高新联合医院35777302重庆今瑜医药股份有限公司PDF.jpg"]
+        imgFilePaths=["./original/12343789.jpg"]
 
     
     listTicketDataArr=[];
