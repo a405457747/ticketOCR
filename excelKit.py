@@ -25,6 +25,7 @@ class excelKit:
         sht = wb.sheets[sheetIdx]
 
         for rowData in  rowsData:
+            print("add excel data and rowData is ",rowData);
             # 最后一行数目
             last_row=sht.range('A' + str(sht.cells.last_cell.row)).end('up').row
             # 追加然后保存
