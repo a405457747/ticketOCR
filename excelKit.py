@@ -35,10 +35,12 @@ class excelKit:
 
             rg.value =rowData;
 
+            # 保存excel
+            wb.save(filePath)
 
 
-        # 保存excel
-        wb.save(filePath)
+
+
         # 关闭excel程序
         wb.close()
         app.quit()
