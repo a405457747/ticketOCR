@@ -2,7 +2,7 @@ import xlwings as xw
 
 
 class excelKit:
-
+    @staticmethod  
     def xlwingsObjects(filePath):
         # 应用->工作簿->工作表->范围
         # visible用于设置xlwings操作excel的过程是否显示，默认True表示显示
@@ -16,7 +16,7 @@ class excelKit:
         wb = app.books.open(filePath)
 
         return [app,wb];
-
+    @staticmethod  
     #这个是添加多行
     def appendRowsXlwings(filePath, rowsData,sheetIdx=0):
         app,wb =excelKit.xlwingsObjects(filePath);
@@ -42,7 +42,7 @@ class excelKit:
         wb.close()
         app.quit()
 
-
+    @staticmethod  
     #追加多行数据rowsData是二维数组
     def appendRows(filePath, rowsData,sheetIdx=0):
         '''
