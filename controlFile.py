@@ -65,6 +65,12 @@ class controlFile:
     def createDirectoryIfAbsence(filepath):
         if not os.path.exists(filepath):
             os.mkdir(filepath)
+    #递归复制文件夹带覆盖的
+    @staticmethod
+    def  coverRecursiveCopy(sourceDir,targetDir):
+        controlFile.createDirectoryIfAbsence(targetDir);
+        shutil.copytree(sourceDir,targetDir,dirs_exist_ok=True);
+        
     @staticmethod            
     #获取文件夹中的文件表,这个方法暂时没有后缀的过滤不够方便，不要去修改了，再开一个新方法即可
     def gainAllFilePath(fileDir,baseNameBlackList=[]):
