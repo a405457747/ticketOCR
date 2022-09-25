@@ -57,3 +57,5 @@ class excelKit:
         '''
         excelKit.appendRowsXlwings(filePath,rowsData,sheetIdx);
 
+if __name__ == '__main__':
+    pass;
