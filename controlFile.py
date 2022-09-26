@@ -3,10 +3,7 @@ import os;
 import shutil;   
 import time;
 import json;
-
 from watchdog.observers import Observer
-
-
 from pdf2image import convert_from_path
 
 class controlFile:
@@ -144,3 +141,6 @@ class controlFile:
         if(os.path.exists(filePath)==False):
             f= open(filePath,"w+")
             f.close();
+
+if __name__ == '__main__':
+    pass;            
