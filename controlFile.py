@@ -67,6 +67,16 @@ class controlFile:
     def  coverRecursiveCopy(sourceDir,targetDir):
         controlFile.createDirectoryIfAbsence(targetDir);
         shutil.copytree(sourceDir,targetDir,dirs_exist_ok=True);
+    #递归复制文件夹不带覆盖的
+    @staticmethod
+    def recursiveCopy(sourceDir,targetDir):
+
+        if os.path.exists(targetDir):
+            shutil.rmtree(targetDir)
+        
+
+        shutil.copytree(sourceDir, targetDir)
+
         
     @staticmethod            
     #获取文件夹中的文件表,这个方法暂时没有后缀的过滤不够方便，不要去修改了，再开一个新方法即可
